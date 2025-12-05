@@ -43,163 +43,67 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
         	return room1 + "\n" + room2 + "\n" + room3 + "\n" ;
             }
 
- 
-		public String book(String type, String guest_name)
-			throws RemoteException{
-
-		
-				if(type.equalsIgnoreCase("Single")){
-					// boolean check = true;
-					if(RoomManagerImpl.room1 > 0){
-	
-					
-						//Book a room is the map is empty
-						if (RoomManagerImpl.map.size() == 0){
-                            RoomManagerImpl.room_1.add(guest_name);
-							          RoomManagerImpl.room1 = RoomManagerImpl.room1 - 1;
-            						RoomManagerImpl.map.put("Single",RoomManagerImpl.room_1);
-            						return "Single room Booked ";	
-						}else{ 
-						//Loop through the map incase it's not empty
-						for (Map.Entry<String, List<String>> entry : RoomManagerImpl.map.entrySet()) {
-            			
-            			String key = entry.getKey();
-            			//Store the list of guests in a list called values
-            			List<String> values = entry.getValue();
-            			if(key.equalsIgnoreCase("Single")){
-            				for(String temp: values){
-            					//Check if the user has already booked the room before
-            					if(temp.equalsIgnoreCase(guest_name)){
-									// check = false;
-            						return "Already booked";
-            					}else{
-                                    RoomManagerImpl.room_1.add(guest_name);
-            						//Book the room if they haven't
-            						RoomManagerImpl.room1 = RoomManagerImpl.room1 - 1;
-            						//Store the guest details in the map
-            						RoomManagerImpl.map.put("Single",RoomManagerImpl.room_1);
-            						return "You have booked a single room";
-            						
-            					}
-            			  }
-            			}else{
-                                    RoomManagerImpl.room_1.add(guest_name);
-            						//Book the room if they haven't
-            						RoomManagerImpl.room1 = RoomManagerImpl.room1 - 1;
-            						//Store the guest details in the map
-            						RoomManagerImpl.map.put("Single",RoomManagerImpl.room_1);
-            						return "You have booked a signle room";
-                        }
-            		   }
-        			}
-						return "Room1 is available";
-				}else{
-					return "Single Rooms are fully booked";
-				}
-					}
-		
-				else if(type.equalsIgnoreCase("Double")){
-					// boolean check = true;
-					if(RoomManagerImpl.room2 > 0){
-	
-					
-						//Book a room is the map is empty
-						if (RoomManagerImpl.map.size() == 0){
-                            RoomManagerImpl.room_2.add(guest_name);
-							          RoomManagerImpl.room2 = RoomManagerImpl.room2 - 1;
-            						RoomManagerImpl.map.put("Double",RoomManagerImpl.room_2);
-            						return "Double room Booked";	
-						}else{ 
-						//Loop through the map incase it's not empty
-						for (Map.Entry<String, List<String>> entry : RoomManagerImpl.map.entrySet()) {
-            			
-            			String key = entry.getKey();
-            			//Store the list of guests in a list called values
-            			List<String> values = entry.getValue();
-            			if(key.equalsIgnoreCase("Double")){
-            				for(String temp: values){
-            					//Check if the user has already booked the room before
-            					if(temp.equalsIgnoreCase(guest_name)){
-									// check = false;
-            						return "Already booked";
-            					}else{
-                                    RoomManagerImpl.room_2.add(guest_name);
-            						//Book the room if they haven't
-            						RoomManagerImpl.room2 = RoomManagerImpl.room2 - 1;
-            						//Store the guest details in the map
-            						RoomManagerImpl.map.put("Double",RoomManagerImpl.room_2);
-            						return "You have booked a double room";
-            						
-            					}
-            			  }
-            			}else{
-                                    RoomManagerImpl.room_2.add(guest_name);
-            						//Book the room if they haven't
-            						RoomManagerImpl.room2 = RoomManagerImpl.room2 - 1;
-            						//Store the guest details in the map
-            						RoomManagerImpl.map.put("Double",RoomManagerImpl.room_2);
-            						return "You have booked a Double room";
-                        }
-            		   }
-        			}
-						return "Room2 is available";
-				}else{
-					return "Double Rooms are fully booked";
-				}
-					}else if(type.equalsIgnoreCase("Triple")){
-					if(RoomManagerImpl.room3 > 0){
-	
-						//Book a room is the map is empty
-						if (RoomManagerImpl.map.size() == 0){
-                            RoomManagerImpl.room_3.add(guest_name);
-						    RoomManagerImpl.room3 = RoomManagerImpl.room3 - 1;
-            				RoomManagerImpl.map.put("Triple",RoomManagerImpl.room_3);
-            				return "Triple room Booked";	
-						}else{ 
-						//Loop through the map incase it's not empty
-						for (Map.Entry<String, List<String>> entry : RoomManagerImpl.map.entrySet()) {
-            			
-            			String key = entry.getKey();
-            			//Store the list of guests in a list called values
-            			List<String> values = entry.getValue();
-            			if(key.equalsIgnoreCase("Triple")){
-            				for(String temp: values){
-            					//Check if the user has already booked the room before
-            					if(temp.equalsIgnoreCase(guest_name)){
-            						return "Already booked";
-									
-            					}else{
-                                    RoomManagerImpl.room_3.add(guest_name);
-            						//Book the room if they haven't
-            						RoomManagerImpl.room3 = RoomManagerImpl.room3 - 1;
-            						//Store the guest details in the map
-            						RoomManagerImpl.map.put("Triple",RoomManagerImpl.room_3);
-            						return "You have booked a triple room";
-            						
-            					}
-            			  }
-            			}else{
-                                RoomManagerImpl.room_3.add(guest_name);
-         						//Book the room if they haven't
-            					RoomManagerImpl.room3 = RoomManagerImpl.room3 - 1;
-            					//Store the guest details in the map
-            					RoomManagerImpl.map.put("Triple",RoomManagerImpl.room_3);
-            					return "You have booked a triple";
-                        }
-            		   }
-        			}
-						return "Room3 is available";
-				}else{
-                    return "Triple Rooms are fully booked";
-                }
-					}
-					else{
-					//Prints if the room entered from the client does not exist
-					return "Room number does not exist";
-				}
-		
-			}
-		
+        
+		public String book(String type, String guest_name) throws RemoteException {
+	    String roomType = type.toLowerCase();
+    
+   		 if (roomType.equals("single")) {
+    	    if (RoomManagerImpl.room1 <= 0) {
+            return "Single Rooms are fully booked";
+        }
+        
+        // Check if guest already booked ANY room (using case-insensitive)
+        for (String guest : RoomManagerImpl.guests) {
+            if (guest.equalsIgnoreCase(guest_name)) {
+                return "Already booked (guest exists in system)";
+            }
+        }
+        
+        // Book the room
+        RoomManagerImpl.room1--;
+        RoomManagerImpl.room_1.add(guest_name);
+        RoomManagerImpl.guests.add(guest_name);
+        RoomManagerImpl.map.put("single", RoomManagerImpl.room_1);
+        return "Single room booked for " + guest_name;
+    }
+    else if (roomType.equals("double")) {
+        if (RoomManagerImpl.room2 <= 0) {
+            return "Double Rooms are fully booked";
+        }
+        
+        for (String guest : RoomManagerImpl.guests) {
+            if (guest.equalsIgnoreCase(guest_name)) {
+                return "Already booked (guest exists in system)";
+            }
+        }
+        
+        RoomManagerImpl.room2--;
+        RoomManagerImpl.room_2.add(guest_name);
+        RoomManagerImpl.guests.add(guest_name);
+        RoomManagerImpl.map.put("double", RoomManagerImpl.room_2);
+        return "Double room booked for " + guest_name;
+    }
+    else if (roomType.equals("triple")) {
+        if (RoomManagerImpl.room3 <= 0) {
+            return "Triple Rooms are fully booked";
+        }
+        
+        for (String guest : RoomManagerImpl.guests) {
+            if (guest.equalsIgnoreCase(guest_name)) {
+                return "Already booked (guest exists in system)";
+            }
+        }
+        
+        RoomManagerImpl.room3--;
+        RoomManagerImpl.room_3.add(guest_name);
+        RoomManagerImpl.guests.add(guest_name);
+        RoomManagerImpl.map.put("triple", RoomManagerImpl.room_3);
+        return "Triple room booked for " + guest_name;
+    }
+    else {
+        return "Room type does not exist. Use: Single, Double, or Triple";
+    }
+}
 
 		public List<String> guests()
 			throws RemoteException{
