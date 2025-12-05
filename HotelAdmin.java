@@ -9,11 +9,9 @@ public class HotelAdmin {
 
             if (args.length >= 1) {
                 if (args[0].equalsIgnoreCase("stats")) {
-                    // Show statistics
                     System.out.println(h.getStats());
                     
                 } else if (args[0].equalsIgnoreCase("reset") && args.length == 2 && args[1].equalsIgnoreCase("confirm")) {
-                    // Reset system
                     System.out.println(h.resetSystem());
                     
                 } else if (args[0].equalsIgnoreCase("add") && args.length == 4) {
@@ -23,18 +21,43 @@ public class HotelAdmin {
                     int price = Integer.parseInt(args[3]);
                     System.out.println(h.addRooms(type, count, price));
                     
-                } else if (args[0].equalsIgnoreCase("all")) {
-                    // Show everything (rooms + revenue + guests)
-                    System.out.println(h.list());
-                    System.out.println("\n" + h.revenue());
-                    System.out.println("\nGuests: " + h.guests());
-                    
-                } else {
-                    System.out.println("Invalid command");
-                    showHelp();
                 }
+                else if(args[0].equalsIgnoreCase("list")){
+                System.out.println(h.list());}
+                else if(args[0].equals("guests")){
+                    System.out.println(h.guests());
+
+            }
+            
+            else if(args[0].equals("revenue")){
+            System.out.println(h.revenue());
             } else {
-                showHelp();
+                 {
+        System.out.println("Use one of these Hotel Admin Available commands:");
+        System.out.println("");
+        System.out.println("java HotelAdmin stats");
+        System.out.println("java HotelAdmin reset confirm");
+        System.out.println("java HotelAdmin add <room-type> <count> <price>");
+        System.out.println("java HotelAdmin guests");
+        System.out.println("java HotelAdmin revenue");
+        System.out.println("java HotelAdmin list");
+
+    }
+            }
+                
+
+            } else {
+                 {
+        System.out.println("Use one of these Hotel Admin Available commands:");
+        System.out.println("");
+        System.out.println("java HotelAdmin stats");
+        System.out.println("java HotelAdmin reset confirm");
+        System.out.println("java HotelAdmin add <room-type> <count> <price>");
+        System.out.println("java HotelAdmin guests");
+        System.out.println("java HotelAdmin revenue");
+        System.out.println("java HotelAdmin list");
+
+    }
             }
 
         } catch (Exception e) {
@@ -43,12 +66,5 @@ public class HotelAdmin {
         }
     }
     
-    private static void showHelp() {
-        System.out.println("Hotel Admin Available commands:");
-        System.out.println("");
-        System.out.println("java HotelAdmin stats");
-        System.out.println("java HotelAdmin reset confirm");
-        System.out.println("java HotelAdmin add <room-type> <count> <price>");
-        System.out.println("java HotelAdmin all");
-    }
+ 
 }

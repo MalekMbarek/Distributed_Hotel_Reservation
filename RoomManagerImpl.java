@@ -21,7 +21,7 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
     
     // Room type definitions
     private static Map<String, RoomType> rooms = new HashMap<>();
-    private static Set<String> allGuestNames = new HashSet<>(); // Use Set to avoid duplicates
+    private static Set<String> allGuestNames = new HashSet<>();
     
     static {
         // Initialize room types
@@ -49,42 +49,40 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
     public String book(String type, String guestName) throws RemoteException {
         String roomKey = type.toLowerCase();
         
-        // Validate room type
         if (!rooms.containsKey(roomKey)) {
-            return "Error: Invalid room type. Available: Single, Double, Triple";
+            return "Invalid room type.";
         }
-        
         RoomType room = rooms.get(roomKey);
-        
-        // Check availability
         if (room.currentCount <= 0) {
             return String.format("Error: No %s rooms available", room.displayName);
         }
-        
-        // Check if guest already booked ANY room (case-insensitive)
-        for (String existingGuest : allGuestNames) {
-            if (existingGuest.equalsIgnoreCase(guestName)) {
-                return String.format("Error: Guest '%s' has already booked a room", guestName);
-            }
-        }
-        
-        // Book the room
         room.currentCount--;
         room.bookedGuests.add(guestName);
         allGuestNames.add(guestName);
         
-        return String.format("Success: %s room booked for %s. Price: %d DT",
-                           room.displayName, guestName, room.price);
+        return String.format("%s room booked by %s for %d DT per night",room.displayName, guestName, room.price);
     }
     
-    public List<String> guests() throws RemoteException {
-        // Return as list for RMI compatibility
-        return new ArrayList<>(allGuestNames);
+    public String guests() throws RemoteException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GUEST LIST\n");
+            if(allGuestNames.size() == 0){
+                return ("No guests have booked yet");
+            }else{
+                System.out.println("List of all guests in the hotel");
+                for(String guest: allGuestNames){
+                     sb.append(guest);
+                }
+                        }
+        sb.append(String.format("\nTotal guests: %d\n", allGuestNames.size()));
+
+         return sb.toString();
+
     }
     
     public String revenue() throws RemoteException {
         StringBuilder sb = new StringBuilder();
-        sb.append("REVENUE REPORT\n");
+        sb.append("HOTEL REVENUE\n");
         
         int totalRevenue = 0;
         
@@ -96,14 +94,11 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
             sb.append(String.format("%s: %d booked × %d DT = %d DT\n",
                                   room.displayName, bookedCount, room.price, roomRevenue));
         }
-        sb.append(String.format("TOTAL REVENUE: %d DT\n", totalRevenue));
-        sb.append(String.format("TOTAL GUESTS: %d\n", allGuestNames.size()));
+        sb.append(String.format("total revenue: %d DT\n", totalRevenue));
         
         return sb.toString();
     }
-    
-    // ADMIN METHODS 
-    
+        
     public String getStats() throws RemoteException {
         int totalCapacity = 0;
         int totalBooked = 0;
@@ -118,7 +113,7 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
         double occupancyRate = totalCapacity > 0 ? (totalBooked * 100.0) / totalCapacity : 0;
         
         return String.format(
-            "=== HOTEL STATISTICS ===\n" +
+            "HOTEL STATISTICS\n" +
             "Total Capacity: %d rooms\n" +
             "Booked: %d rooms\n" +
             "Available: %d rooms\n" +
@@ -138,22 +133,25 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
         }
         allGuestNames.clear();
         
-        return "System reset successfully. All bookings cleared.";
+        return "System has been reset and all bookings are cleared.";
     }
     
     public String addRooms(String type, int count, int price) throws RemoteException {
         String roomKey = type.toLowerCase();
         
         if (!rooms.containsKey(roomKey)) {
-            return "Error: Room type doesn't exist. Create it first.";
-        }
+
+        rooms.put(type, new RoomType(count, price, type));
+
+        return String.format("New room type created: %d new %s room(s) at %d DT a day", count, type, price);}
+
         
         RoomType room = rooms.get(roomKey);
         room.initialCount += count;
         room.currentCount += count;
-        room.price = price; // Update price
+        room.price = price;
         
-        return String.format("Added %d %s rooms. New capacity: %d at %d DT each",
+        return String.format("Added %d %s room(s) \nNew capacity: %d \nNew price: %d DT each",
                            count, room.displayName, room.initialCount, price);
     }
     
