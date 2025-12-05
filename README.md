@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Hotel Reservation System (RMI Project)
 
 Project Files
@@ -80,3 +81,6 @@ java HotelServer
 # Terminal 3 - Client (or open more terminals)
 java HotelClient list
 java HotelAdmin stats
+=======
+
+>>>>>>> 45a9e097c220a76327c7956adb2b9108f5836f04
