@@ -32,7 +32,7 @@ public class HotelClient{
             }
         }else{
            		System.out.println("");
-				System.out.println("Please use anyone of the following commands for RoomManagerImpl :");
+				System.out.println("Please use anyone of the following commands :");
 				System.out.println("");
 				System.out.println("java HotelClient list");
 				System.out.println("java HotelClient book <room type(Single-Double-Triple)> <guest name>");

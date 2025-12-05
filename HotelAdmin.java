@@ -1,0 +1,54 @@
+import java.rmi.Naming;
+import java.util.*;
+
+public class HotelAdmin {
+    public static void main(String[] args) {
+        try {
+            // Connect to RMI server (same as HotelClient)
+            RoomManager h = (RoomManager) Naming.lookup("rmi://localhost:1099/Hotel");
+
+            if (args.length >= 1) {
+                if (args[0].equalsIgnoreCase("stats")) {
+                    // Show statistics
+                    System.out.println(h.getStats());
+                    
+                } else if (args[0].equalsIgnoreCase("reset") && args.length == 2 && args[1].equalsIgnoreCase("confirm")) {
+                    // Reset system
+                    System.out.println(h.resetSystem());
+                    
+                } else if (args[0].equalsIgnoreCase("add") && args.length == 4) {
+                    // Add rooms: add <type> <count> <price>
+                    String type = args[1];
+                    int count = Integer.parseInt(args[2]);
+                    int price = Integer.parseInt(args[3]);
+                    System.out.println(h.addRooms(type, count, price));
+                    
+                } else if (args[0].equalsIgnoreCase("all")) {
+                    // Show everything (rooms + revenue + guests)
+                    System.out.println(h.list());
+                    System.out.println("\n" + h.revenue());
+                    System.out.println("\nGuests: " + h.guests());
+                    
+                } else {
+                    System.out.println("Invalid command");
+                    showHelp();
+                }
+            } else {
+                showHelp();
+            }
+
+        } catch (Exception e) {
+            System.out.println("Exception received:");
+            System.out.println(e);
+        }
+    }
+    
+    private static void showHelp() {
+        System.out.println("Hotel Admin Available commands:");
+        System.out.println("");
+        System.out.println("java HotelAdmin stats");
+        System.out.println("java HotelAdmin reset confirm");
+        System.out.println("java HotelAdmin add <room-type> <count> <price>");
+        System.out.println("java HotelAdmin all");
+    }
+}
