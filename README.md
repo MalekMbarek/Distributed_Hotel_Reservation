@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-Hotel Reservation System (RMI Project)
+# Hotel Reservation System (RMI Project)
 
 Project Files
 
@@ -72,15 +71,11 @@ javac *.java
 
 Run (3 terminals needed):
 
-# Terminal 1 - RMI Registry
+**Terminal 1 - RMI Registry**
 rmiregistry
-
-# Terminal 2 - Server
+**Terminal 2 - Server**
 java HotelServer
 
-# Terminal 3 - Client (or open more terminals)
+**Terminal 3 - Client (or open more terminals)**
 java HotelClient list
 java HotelAdmin stats
-=======
-
->>>>>>> 45a9e097c220a76327c7956adb2b9108f5836f04
