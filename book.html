@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Stay - Grand Lux Hotel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .booking-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        
+        .booking-header {
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .booking-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .booking-header p {
+            opacity: 0.9;
+            font-size: 18px;
+            font-weight: 300;
+        }
+        
+        .booking-form {
+            padding: 50px 40px;
+        }
+        
+        .form-step {
+            margin-bottom: 40px;
+        }
+        
+        .step-title {
+            font-size: 22px;
+            color: #1a2980;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 18px 20px;
+            padding-left: 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            color: #333;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #1a2980;
+            background: white;
+            box-shadow: 0 5px 15px rgba(26, 41, 128, 0.1);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 40px;
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .room-options {
+            display: grid;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .room-option {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .room-option:hover {
+            border-color: #1a2980;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .room-option input[type="radio"] {
+            display: none;
+        }
+        
+        .room-option input[type="radio"]:checked + .room-content {
+            border-color: #4CAF50;
+            background: #e8f5e9;
+        }
+        
+        .room-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 20px;
+        }
+        
+        .room-info {
+            flex: 1;
+        }
+        
+        .room-info h4 {
+            font-size: 20px;
+            color: #1a2980;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+        
+        .room-description {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            font-style: italic;
+        }
+        
+        .room-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .detail-item i {
+            color: #1a2980;
+        }
+        
+        .room-price-section {
+            text-align: right;
+            min-width: 120px;
+        }
+        
+        .room-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a2980;
+            margin-bottom: 5px;
+        }
+        
+        .room-price span {
+            font-size: 14px;
+            color: #666;
+            font-weight: 400;
+        }
+        
+        .guests-badge {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 8px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to right, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-link a {
+            color: #666;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+        
+        .back-link a:hover {
+            color: #1a2980;
+            background: #f8f9fa;
+        }
+        
+        .confirmation-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-weight: 600;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .loading i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #1a2980;
+        }
+        
+        @media (max-width: 768px) {
+            .booking-container {
+                border-radius: 15px;
+            }
+            
+            .booking-header,
+            .booking-form {
+                padding: 30px 20px;
+            }
+            
+            .booking-header h1 {
+                font-size: 28px;
+            }
+            
+            .room-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .room-price-section {
+                text-align: left;
+                width: 100%;
+                border-top: 1px solid #eee;
+                padding-top: 15px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="booking-container">
+        <div class="booking-header">
+            <i class="fas fa-calendar-check header-icon"></i>
+            <h1>Book Your Perfect Stay</h1>
+            <p>Experience luxury and comfort at Grand Lux Hotel</p>
+        </div>
+        
+        <form action="/client/book" method="post" class="booking-form" id="bookingForm">
+            <div class="confirmation-badge">
+                <i class="fas fa-shield-alt"></i>
+                Secure Booking • Best Price Guarantee • Free Cancellation
+            </div>
+            
+            <div class="form-step">
+                <h2 class="step-title">
+                    <div class="step-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    Guest Information
+                </h2>
+                
+                <div class="form-group">
+                    <label for="guestName">
+                        <i class="fas fa-user-circle"></i>
+                        Full Name
+                    </label>
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <input type="text" id="guestName" name="guestName" required 
+                           placeholder="Enter your full name (as per ID)"
+                           pattern="[A-Za-z\s]{3,50}"
+                           title="Please enter a valid name (3-50 characters)">
+                </div>
+            </div>
+            
+            <div class="form-step">
+                <h2 class="step-title">
+                    <div class="step-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                    Select Room Type
+                </h2>
+                
+                <div id="roomOptions" class="room-options">
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <h3>Loading available rooms...</h3>
+                        <p>Please wait while we fetch room information</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-step">
+                <h2 class="step-title">
+                    <div class="step-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    Booking Summary
+                </h2>
+                
+                <div class="summary-card">
+                    <div class="summary-item">
+                        <span>Selected Room:</span>
+                        <strong id="selectedRoom">--</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Max Occupancy:</span>
+                        <strong id="roomGuests">-- guest(s)</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Description:</span>
+                        <strong id="roomDescription">--</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Price per Night:</span>
+                        <strong id="roomPrice">-- DT</strong>
+                    </div>
+                    <div class="summary-item total">
+                        <span>Total (1 night):</span>
+                        <strong id="totalPrice">-- DT</strong>
+                    </div>
+                </div>
+                
+                <style>
+                    .summary-card {
+                        background: #f8f9fa;
+                        border-radius: 12px;
+                        padding: 25px;
+                        margin-top: 20px;
+                    }
+                    
+                    .summary-item {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-start;
+                        padding: 12px 0;
+                        border-bottom: 1px solid #e0e0e0;
+                    }
+                    
+                    .summary-item:last-child {
+                        border-bottom: none;
+                    }
+                    
+                    .summary-item.total {
+                        font-size: 20px;
+                        color: #1a2980;
+                        font-weight: 700;
+                        margin-top: 10px;
+                        padding-top: 15px;
+                        border-top: 2px solid #1a2980;
+                    }
+                </style>
+            </div>
+            
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-lock"></i>
+                Complete Booking
+            </button>
+        </form>
+        
+        <div class="back-link">
+            <a href="/">
+                <i class="fas fa-arrow-left"></i>
+                Back to Main Menu
+            </a>
+        </div>
+    </div>
+
+       <script>
+        // Room data will be loaded from server
+        let roomData = {};
+        
+        // Load room data from server
+        async function loadRoomData() {
+            try {
+                const response = await fetch('/admin/list');
+                if (response.ok) {
+                    const text = await response.text();
+                    console.log("Server response:", text);
+                    roomData = parseRoomDataForBooking(text);
+                    renderRoomOptions();
+                }
+            } catch (error) {
+                console.error('Error loading room data:', error);
+                showError('Failed to load room data. Please try again.');
+            }
+        }
+        
+        // Parse room data specifically for booking page
+        function parseRoomDataForBooking(text) {
+            console.log("Parsing for booking:", text);
+            
+            const roomData = {};
+            const lines = text.split('\n');
+            let currentRoom = null;
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                // Look for room type lines like "Single Room:"
+                if (line.includes('Room:')) {
+                    if (currentRoom && currentRoom.type) {
+                        roomData[currentRoom.type] = {
+                            displayName: currentRoom.displayName,
+                            name: currentRoom.displayName,
+                            price: currentRoom.price.toLocaleString(),
+                            guests: `${currentRoom.maxGuests} guest${currentRoom.maxGuests > 1 ? 's' : ''}`,
+                            description: currentRoom.description,
+                            maxGuests: currentRoom.maxGuests
+                        };
+                    }
+                    
+                    const roomName = line.replace(':', '').trim();
+                    const type = roomName.toLowerCase().replace(' room', '');
+                    
+                    currentRoom = {
+                        type: type,
+                        displayName: roomName,
+                        price: 0,
+                        maxGuests: 2,
+                        description: ''
+                    };
+                }
+                
+                // Parse room details
+                if (currentRoom) {
+                    if (line.includes('Price:')) {
+                        const match = line.match(/Price:\s*(\d+)/);
+                        if (match) {
+                            currentRoom.price = parseInt(match[1]);
+                        }
+                    }
+                    else if (line.includes('Max guests:')) {
+                        const match = line.match(/Max guests:\s*(\d+)/);
+                        if (match) {
+                            currentRoom.maxGuests = parseInt(match[1]);
+                        }
+                    }
+                    else if (line.includes('Description:')) {
+                        const desc = line.replace('Description:', '').trim();
+                        currentRoom.description = desc;
+                    }
+                }
+            }
+            
+            // Don't forget the last room
+            if (currentRoom && currentRoom.type) {
+                roomData[currentRoom.type] = {
+                    displayName: currentRoom.displayName,
+                    name: currentRoom.displayName,
+                    price: currentRoom.price.toLocaleString(),
+                    guests: `${currentRoom.maxGuests} guest${currentRoom.maxGuests > 1 ? 's' : ''}`,
+                    description: currentRoom.description || getDefaultDescription(currentRoom.type),
+                    maxGuests: currentRoom.maxGuests
+                };
+            }
+            
+            console.log("Parsed room data:", roomData);
+            return roomData;
+        }
+        
+        // Get default description based on room type
+        function getDefaultDescription(type) {
+            const descriptions = {
+                'single': 'Perfect for solo travelers',
+                'double': 'Ideal for couples',
+                'triple': 'Spacious for families or groups',
+                'suite': 'Luxury suite with premium amenities',
+                'family': 'Perfect for families with children'
+            };
+            return descriptions[type] || 'Comfortable room with essential amenities';
+        }
+        
+        // Render room options dynamically
+        function renderRoomOptions() {
+            const roomOptionsContainer = document.getElementById('roomOptions');
+            
+            if (!roomData || Object.keys(roomData).length === 0) {
+                roomOptionsContainer.innerHTML = `
+                    <div class="loading">
+                        <i class="fas fa-bed"></i>
+                        <h3>No Rooms Available</h3>
+                        <p>All rooms are currently booked. Please check back later.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            for (const [type, room] of Object.entries(roomData)) {
+                html += `
+                    <label class="room-option">
+                        <input type="radio" name="roomType" value="${type}" required>
+                        <div class="room-content">
+                            <div class="room-info">
+                                <h4>${room.displayName}</h4>
+                                <p class="room-description">${room.description}</p>
+                                
+                                <div class="room-details">
+                                    <div class="detail-item">
+                                        <i class="fas fa-user${room.maxGuests > 1 ? 's' : ''}"></i>
+                                        <span>${room.maxGuests} Guest${room.maxGuests > 1 ? 's' : ''}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="room-price-section">
+                                <div class="room-price">
+                                    ${room.price} DT
+                                    <span>/night</span>
+                                </div>
+                                <div class="guests-badge">
+                                    <i class="fas fa-user-friends"></i> ${room.maxGuests} Person${room.maxGuests > 1 ? 's' : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </label>
+                `;
+            }
+            
+            roomOptionsContainer.innerHTML = html;
+            
+            // Add event listeners to new radio buttons
+            document.querySelectorAll('input[name="roomType"]').forEach(radio => {
+                radio.addEventListener('change', updateSummary);
+            });
+            
+            // Auto-select first room
+            const firstRadio = document.querySelector('input[name="roomType"]');
+            if (firstRadio) {
+                firstRadio.checked = true;
+                updateSummary();
+            }
+            
+            // Handle URL parameters after rendering
+            const urlParams = new URLSearchParams(window.location.search);
+            const roomTypeFromUrl = urlParams.get('roomType');
+            if (roomTypeFromUrl && roomData[roomTypeFromUrl]) {
+                const radio = document.querySelector(`input[name="roomType"][value="${roomTypeFromUrl}"]`);
+                if (radio) {
+                    radio.checked = true;
+                    updateSummary();
+                    radio.closest('.room-option').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            }
+        }
+        
+        // Update summary based on selected room
+        function updateSummary() {
+            const selectedRoom = document.querySelector('input[name="roomType"]:checked');
+            if (!selectedRoom) return;
+            
+            const roomType = selectedRoom.value;
+            const room = roomData[roomType];
+            
+            if (!room) return;
+            
+            document.getElementById('selectedRoom').textContent = room.displayName;
+            document.getElementById('roomGuests').textContent = `${room.maxGuests} guest${room.maxGuests > 1 ? 's' : ''}`;
+            document.getElementById('roomDescription').textContent = room.description;
+            document.getElementById('roomPrice').textContent = room.price + ' DT';
+            document.getElementById('totalPrice').textContent = room.price + ' DT';
+        }
+        
+        // Show error message
+        function showError(message) {
+            const roomOptionsContainer = document.getElementById('roomOptions');
+            roomOptionsContainer.innerHTML = `
+                <div class="loading" style="color: #f44336;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error Loading Rooms</h3>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+        
+        // Form validation and confirmation
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            const guestName = document.getElementById('guestName').value;
+            const roomType = document.querySelector('input[name="roomType"]:checked');
+            
+            if (!roomType) {
+                e.preventDefault();
+                alert('Please select a room type');
+                return false;
+            }
+            
+            if (!guestName || guestName.length < 3) {
+                e.preventDefault();
+                alert('Please enter a valid name (minimum 3 characters)');
+                return false;
+            }
+            
+            const room = roomData[roomType.value];
+            if (!room) {
+                e.preventDefault();
+                alert('Invalid room selection');
+                return false;
+            }
+            
+            const confirmMessage = `Confirm booking:\n\nRoom: ${room.displayName}\nGuests: ${room.maxGuests} person(s)\nPrice: ${room.price} DT\nGuest: ${guestName}`;
+            
+            if (!confirm(confirmMessage)) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Add loading animation
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing Booking...';
+            submitBtn.disabled = true;
+            
+            // Reset button after 5 seconds in case submission fails
+            setTimeout(() => {
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 5000);
+        });
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load room data from server
+            loadRoomData();
+        });
+    </script>

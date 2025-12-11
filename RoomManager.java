@@ -1,5 +1,4 @@
 import java.rmi.*; 
-import java.util.*;
 
 public interface RoomManager extends Remote{
 	public String book(String a, String b)

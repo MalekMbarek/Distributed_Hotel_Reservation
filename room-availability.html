@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Availability - Grand Lux Hotel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .availability-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        
+        .availability-header {
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .availability-header h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .availability-header p {
+            opacity: 0.9;
+            font-size: 18px;
+            font-weight: 300;
+            margin-bottom: 30px;
+        }
+        
+        .availability-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .availability-content {
+            padding: 50px 40px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #666;
+        }
+        
+        .loading i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #1a2980;
+        }
+        
+        .action-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        .action-title {
+            font-size: 24px;
+            color: #1a2980;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .action-description {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .primary-btn {
+            padding: 18px 40px;
+            background: linear-gradient(to right, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        }
+        
+        .secondary-btn {
+            padding: 18px 40px;
+            background: linear-gradient(to right, #2196F3, #1976D2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(33, 150, 243, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            text-decoration: none;
+        }
+        
+        .secondary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+        }
+        
+        .rooms-section {
+            margin-top: 40px;
+        }
+        
+        .rooms-title {
+            font-size: 24px;
+            color: #1a2980;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .room-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+         
+        }
+        
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+            border-color: #1a2980;
+        }
+        
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .room-name {
+            font-size: 20px;
+            color: #1a2980;
+            font-weight: 700;
+        }
+        
+        .room-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2980;
+        }
+        
+        .room-details {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .room-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .feature-tag {
+            background: rgba(26, 41, 128, 0.1);
+            color: #1a2980;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+        
+        .book-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .book-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .back-link a {
+            color: #666;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+            padding: 12px 25px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        
+        .back-link a:hover {
+            color: #1a2980;
+            background: #e9ecef;
+        }
+        
+        @media (max-width: 768px) {
+            .availability-container {
+                border-radius: 15px;
+            }
+            
+            .availability-header,
+            .availability-content {
+                padding: 30px 20px;
+            }
+            
+            .availability-header h1 {
+                font-size: 28px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .primary-btn, .secondary-btn {
+                width: 100%;
+            }
+            
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="availability-container">
+        <div class="availability-header">
+            <i class="fas fa-search header-icon"></i>
+            <h1>Room Availability</h1>
+            <p>Check real-time availability and book your perfect stay instantly</p>
+            
+            <div class="availability-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="roomTypesCount">--</div>
+                    <div class="stat-label">Room Types</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="priceRange">--</div>
+                    <div class="stat-label">Price Range (DT)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalRooms">--</div>
+                    <div class="stat-label">Total Rooms</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="availableRooms">--</div>
+                    <div class="stat-label">Available Rooms</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="availability-content">
+            <div class="action-section">
+                <h2 class="action-title">
+                    <div class="action-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    View Real-Time Room Availability
+                </h2>
+                
+                <p class="action-description">
+                    Get the most up-to-date information about room availability directly from our reservation system. 
+                    See exactly which rooms are available, their prices, and book instantly.
+                </p>
+                
+                <div class="action-buttons">
+                    <a href="/client/list" class="primary-btn">
+                        <i class="fas fa-list"></i>
+                        View Detailed Availability
+                    </a>
+                    
+                    <a href="/book.html" class="secondary-btn">
+                        <i class="fas fa-calendar-check"></i>
+                        Book a Room Now
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Dynamic Room Display -->
+            <div class="rooms-section" id="roomsSection">
+                <h3 class="rooms-title">Available Room Types</h3>
+                <div class="loading" id="roomsLoading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <h3>Loading room information...</h3>
+                    <p>Fetching real-time availability from server</p>
+                </div>
+                <div class="rooms-grid" id="roomsGrid" style="display: none;">
+                    <!-- Room cards will be dynamically inserted here -->
+                </div>
+            </div>
+            
+            <div class="back-link">
+                <a href="/">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Main Menu
+                </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Load room data from server
+        async function loadRoomData() {
+            try {
+                const response = await fetch('/admin/list');
+                if (response.ok) {
+                    const text = await response.text();
+                    return parseRoomData(text);
+                }
+            } catch (error) {
+                console.error('Error loading room data:', error);
+                return null;
+            }
+            return null;
+        }
+        
+        // Parse room data from server response - SIMPLE VERSION
+        function parseRoomData(text) {
+            console.log("Parsing server response:", text);
+            
+            const rooms = [];
+            const lines = text.split('\n');
+            let currentRoom = null;
+            let totalRooms = 0;
+            let availableRooms = 0;
+            const prices = [];
+            
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                // Look for room type lines like "Single Room:"
+                if (line.includes('Room:')) {
+                    if (currentRoom) {
+                        // Save previous room
+                        rooms.push(currentRoom);
+                    }
+                    
+                    const roomName = line.replace(':', '').trim();
+                    const type = roomName.toLowerCase().replace(' room', '');
+                    
+                    currentRoom = {
+                        type: type,
+                        name: roomName,
+                        displayName: roomName,
+                        available: 0,
+                        total: 0,
+                        price: 0,
+                        maxGuests: 2, // default
+                        description: '',
+                        status: 'Available'
+                    };
+                }
+                
+                // Parse room details if we have a current room
+                if (currentRoom) {
+                    if (line.includes('Available:')) {
+                        // Example: "Available: 5 of 5 rooms"
+                        const match = line.match(/Available:\s*(\d+)\s*of\s*(\d+)/);
+                        if (match) {
+                            currentRoom.available = parseInt(match[1]);
+                            currentRoom.total = parseInt(match[2]);
+                            availableRooms += currentRoom.available;
+                            totalRooms += currentRoom.total;
+                        }
+                    }
+                    else if (line.includes('Price:')) {
+                        // Example: "Price: 55000 DT per night"
+                        const match = line.match(/Price:\s*(\d+)/);
+                        if (match) {
+                            currentRoom.price = parseInt(match[1]);
+                            prices.push(currentRoom.price);
+                        }
+                    }
+                    else if (line.includes('Max guests:')) {
+                        // Example: "Max guests: 1 person(s)"
+                        const match = line.match(/Max guests:\s*(\d+)/);
+                        if (match) {
+                            currentRoom.maxGuests = parseInt(match[1]);
+                        }
+                    }
+                    else if (line.includes('Description:')) {
+                        // Example: "Description: Perfect for solo travelers with essential amenities"
+                        const desc = line.replace('Description:', '').trim();
+                        currentRoom.description = desc;
+                    }
+                    else if (line.includes('Status:')) {
+                        // Example: "Status: Available"
+                        const status = line.replace('Status:', '').trim();
+                        currentRoom.status = status;
+                    }
+                }
+            }
+            
+            // Don't forget the last room
+            if (currentRoom) {
+                rooms.push(currentRoom);
+            }
+            
+            console.log("Parsed rooms:", rooms);
+            
+            return {
+                rooms: rooms,
+                stats: {
+                    roomTypes: rooms.length,
+                    totalRooms: totalRooms,
+                    availableRooms: availableRooms,
+                    minPrice: prices.length > 0 ? Math.min(...prices) : 0,
+                    maxPrice: prices.length > 0 ? Math.max(...prices) : 0
+                }
+            };
+        }
+        
+        // Get default description based on room type
+        function getDefaultDescription(type) {
+            const descriptions = {
+                'single': 'Perfect for solo travelers',
+                'double': 'Ideal for couples',
+                'triple': 'Spacious for families or groups',
+                'suite': 'Luxury suite with premium amenities',
+                'family': 'Perfect for families with children'
+            };
+            return descriptions[type] || 'Comfortable room with essential amenities';
+        }
+        
+        // Get default guests based on room type
+        function getDefaultGuests(type) {
+            const guests = {
+                'single': 1,
+                'double': 2,
+                'triple': 3,
+                'suite': 4,
+                'family': 4
+            };
+            return guests[type] || 2;
+        }
+        
+        // Render room cards
+        function renderRooms(data) {
+            console.log("Rendering rooms with data:", data);
+            
+            const roomsGrid = document.getElementById('roomsGrid');
+            const loadingDiv = document.getElementById('roomsLoading');
+            
+            if (!data || !data.rooms || data.rooms.length === 0) {
+                loadingDiv.innerHTML = `
+                    <i class="fas fa-bed"></i>
+                    <h3>No Rooms Available</h3>
+                    <p>Could not load room data. Please try refreshing.</p>
+                    <button onclick="debugRoomData()" style="margin-top: 10px; padding: 8px 16px; background: #1a2980; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Debug Server Response
+                    </button>
+                `;
+                return;
+            }
+            
+            // Hide loading, show grid
+            loadingDiv.style.display = 'none';
+            roomsGrid.style.display = 'grid';
+            
+            let html = '';
+            
+            data.rooms.forEach(room => {
+                if (!room || !room.displayName) return;
+                
+                html += `
+                    <div class="room-card">
+                        <div class="room-header">
+                            <div class="room-name">${room.displayName}</div>
+                            <div class="room-price">${room.price.toLocaleString()} DT</div>
+                        </div>
+                        
+                        <div class="room-details">
+                            ${room.description || 'Comfortable room with essential amenities'}
+                        </div>
+                        
+                        <div class="room-features">
+                            <span class="feature-tag">
+                                <i class="fas fa-user${room.maxGuests > 1 ? 's' : ''}"></i>
+                                ${room.maxGuests} Guest${room.maxGuests > 1 ? 's' : ''}
+                            </span>
+                            <span class="feature-tag">
+                                <i class="fas fa-bed"></i>
+                                ${room.available} Available
+                            </span>
+                            <span class="feature-tag">
+                                <i class="fas fa-info-circle"></i>
+                                ${room.status || 'Available'}
+                            </span>
+                        </div>
+                        
+                        <button class="book-btn" onclick="bookRoom('${room.type}')">
+                            <i class="fas fa-calendar-plus"></i>
+                            Book ${room.displayName}
+                        </button>
+                    </div>
+                `;
+            });
+            
+            roomsGrid.innerHTML = html;
+            
+            // Update statistics
+            if (data.stats) {
+                updateStats(data.stats);
+            }
+        }
+        
+        // Update statistics display
+        function updateStats(stats) {
+            document.getElementById('roomTypesCount').textContent = stats.roomTypes;
+            document.getElementById('priceRange').textContent = 
+                stats.minPrice > 0 ? `${(stats.minPrice/1000).toFixed(0)}K-${(stats.maxPrice/1000).toFixed(0)}K` : '--';
+            document.getElementById('totalRooms').textContent = stats.totalRooms;
+            document.getElementById('availableRooms').textContent = stats.availableRooms;
+        }
+        
+        // Book room function
+        function bookRoom(roomType) {
+            window.location.href = `/book.html?roomType=${roomType}`;
+        }
+        
+        // Debug function to see what the server returns
+        function debugRoomData() {
+            console.log("Debugging room data...");
+            loadRoomData().then(data => {
+                console.log("Parsed data:", data);
+                alert("Check console for debug info");
+            });
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log("Page loaded, fetching room data...");
+            
+            // Load room data
+            const data = await loadRoomData();
+            console.log("Data loaded:", data);
+            renderRooms(data);
+            
+            // Add click animation to buttons
+            const buttons = document.querySelectorAll('.primary-btn, .secondary-btn');
+            buttons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                    this.style.opacity = '0.8';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.style.opacity = '1';
+                    }, 1500);
+                });
+            });
+            
+            // Add refresh button functionality
+            const refreshBtn = document.createElement('button');
+            refreshBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+            refreshBtn.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #1a2980, #26d0ce);
+                color: white;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 25px;
+                cursor: pointer;
+                font-weight: 600;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 100;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            `;
+            refreshBtn.onclick = async function() {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Refreshing...';
+                const newData = await loadRoomData();
+                renderRooms(newData);
+                this.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+                
+                // Show notification
+                showNotification('Room availability updated!', 'success');
+            };
+            document.body.appendChild(refreshBtn);
+        });
+        
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+                color: white;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                ${message}
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+            
+            // Add animation styles
+            if (!document.getElementById('notificationStyles')) {
+                const style = document.createElement('style');
+                style.id = 'notificationStyles';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+    </script>

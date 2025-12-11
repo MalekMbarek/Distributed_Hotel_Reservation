@@ -2,32 +2,38 @@ import java.rmi.*;
 import java.util.*;
 
 public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject implements RoomManager {
-    // Room configurations
+    // Enhanced RoomType class with more details
     private static class RoomType {
         int initialCount;
         int currentCount;
         int price;
-        List<String> bookedGuests;
+        int maxGuests;
         String displayName;
+        String description;
+        List<String> bookedGuests;
         
-        RoomType(int count, int price, String displayName) {
+        RoomType(int count, int price, String displayName, int maxGuests, String description) {
             this.initialCount = count;
             this.currentCount = count;
             this.price = price;
-            this.bookedGuests = new ArrayList<>();
             this.displayName = displayName;
+            this.maxGuests = maxGuests;
+            this.description = description;
+            this.bookedGuests = new ArrayList<>();
         }
     }
     
-    // Room type definitions
     private static Map<String, RoomType> rooms = new HashMap<>();
     private static Set<String> allGuestNames = new HashSet<>();
     
     static {
-        // Initialize room types
-        rooms.put("single", new RoomType(5, 55000, "Single"));
-        rooms.put("double", new RoomType(6, 75000, "Double"));
-        rooms.put("triple", new RoomType(2, 80000, "Triple"));
+        // Initialize with enhanced room types
+        rooms.put("single", new RoomType(5, 55000, "Single Room", 1, 
+            "Perfect for solo travelers with essential amenities"));
+        rooms.put("double", new RoomType(6, 75000, "Double Room", 2, 
+            "Ideal for couples with comfortable bedding"));
+        rooms.put("triple", new RoomType(2, 80000, "Triple Room", 3, 
+            "Spacious room suitable for families or small groups"));
     }
     
     public RoomManagerImpl() throws RemoteException {
@@ -39,8 +45,14 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
         sb.append("AVAILABLE ROOMS\n");
         
         for (RoomType room : rooms.values()) {
-            sb.append(String.format("%d %s room(s) available for %d DT per night\n",
-                                  room.currentCount, room.displayName, room.price));
+            sb.append(String.format("%s:\n", room.displayName));
+            sb.append(String.format("  Available: %d of %d rooms\n", room.currentCount, room.initialCount));
+            sb.append(String.format("  Price: %d DT per night\n", room.price));
+            sb.append(String.format("  Max guests: %d person(s)\n", room.maxGuests));
+            sb.append(String.format("  Description: %s\n", room.description));
+            sb.append(String.format("  Status: %s\n\n", 
+                room.currentCount > 2 ? "Available" : 
+                room.currentCount > 0 ? "Limited availability" : "Sold out"));
         }
         
         return sb.toString();
@@ -50,78 +62,123 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
         String roomKey = type.toLowerCase();
         
         if (!rooms.containsKey(roomKey)) {
-            return "Invalid room type.";
+            return "Invalid room type. Available types: single, double, triple";
         }
+        
         RoomType room = rooms.get(roomKey);
         if (room.currentCount <= 0) {
             return String.format("Error: No %s rooms available", room.displayName);
         }
+        
         room.currentCount--;
         room.bookedGuests.add(guestName);
         allGuestNames.add(guestName);
         
-        return String.format("%s room booked by %s for %d DT per night",room.displayName, guestName, room.price);
+        return String.format(
+            "SUCCESSFUL BOOKING!\n" +
+            "Room type: %s\n" +
+            "Guest name: %s\n" +
+            "Max occupancy: %d guest(s)\n" +
+            "Price: %d DT per night\n" +
+            "Description: %s\n" +
+            "Booking confirmed!",
+            room.displayName, guestName, room.maxGuests, room.price, room.description
+        );
     }
     
     public String guests() throws RemoteException {
         StringBuilder sb = new StringBuilder();
         sb.append("GUEST LIST\n");
-            if(allGuestNames.size() == 0){
-                return ("No guests have booked yet");
-            }else{
-                System.out.println("List of all guests in the hotel");
-                for(String guest: allGuestNames){
-                     sb.append(guest);
+        
+        if(allGuestNames.size() == 0) {
+            return "No guests have booked yet";
+        } else {
+            int guestNumber = 1;
+            for(String guest: allGuestNames) {
+                sb.append(String.format("%d. %s\n", guestNumber++, guest));
+            }
+            sb.append(String.format("\nTotal guests: %d\n", allGuestNames.size()));
+            
+            // Also show room-specific guest counts
+            sb.append("\nGuests by Room Type:\n");
+            for (RoomType room : rooms.values()) {
+                if (!room.bookedGuests.isEmpty()) {
+                    sb.append(String.format("  %s: %d guest(s)\n", 
+                        room.displayName, room.bookedGuests.size()));
                 }
-                        }
-        sb.append(String.format("\nTotal guests: %d\n", allGuestNames.size()));
-
-         return sb.toString();
-
+            }
+        }
+        
+        return sb.toString();
     }
     
     public String revenue() throws RemoteException {
         StringBuilder sb = new StringBuilder();
-        sb.append("HOTEL REVENUE\n");
+        sb.append("HOTEL REVENUE REPORT\n");
         
         int totalRevenue = 0;
+        int totalBookedRooms = 0;
         
         for (RoomType room : rooms.values()) {
             int bookedCount = room.initialCount - room.currentCount;
             int roomRevenue = bookedCount * room.price;
             totalRevenue += roomRevenue;
+            totalBookedRooms += bookedCount;
             
-            sb.append(String.format("%s: %d booked × %d DT = %d DT\n",
-                                  room.displayName, bookedCount, room.price, roomRevenue));
+            sb.append(String.format("%s:\n", room.displayName));
+            sb.append(String.format("  • Booked rooms: %d\n", bookedCount));
+            sb.append(String.format("  • Price per room: %d DT\n", room.price));
+            sb.append(String.format("  • Room revenue: %d DT\n", roomRevenue));
+            sb.append(String.format("  • Max guests per room: %d\n", room.maxGuests));
+            sb.append(String.format("  • Potential guests: %d\n\n", bookedCount * room.maxGuests));
         }
-        sb.append(String.format("total revenue: %d DT\n", totalRevenue));
+        
+        sb.append(String.format("SUMMARY:\n"));
+        sb.append(String.format("  • Total booked rooms: %d\n", totalBookedRooms));
+        sb.append(String.format("  • Total revenue: %d DT\n", totalRevenue));
+        sb.append(String.format("  • Average price per room: %d DT\n", 
+            totalBookedRooms > 0 ? totalRevenue / totalBookedRooms : 0));
         
         return sb.toString();
     }
-        
+    
     public String getStats() throws RemoteException {
         int totalCapacity = 0;
         int totalBooked = 0;
         int totalAvailable = 0;
+        int maxPotentialGuests = 0;
+        int currentGuests = 0;
         
         for (RoomType room : rooms.values()) {
             totalCapacity += room.initialCount;
             totalBooked += (room.initialCount - room.currentCount);
             totalAvailable += room.currentCount;
+            maxPotentialGuests += room.initialCount * room.maxGuests;
+            currentGuests += (room.initialCount - room.currentCount) * room.maxGuests;
         }
         
         double occupancyRate = totalCapacity > 0 ? (totalBooked * 100.0) / totalCapacity : 0;
+        double guestOccupancyRate = maxPotentialGuests > 0 ? (currentGuests * 100.0) / maxPotentialGuests : 0;
         
         return String.format(
             "HOTEL STATISTICS\n" +
-            "Total Capacity: %d rooms\n" +
-            "Booked: %d rooms\n" +
-            "Available: %d rooms\n" +
-            "Occupancy Rate: %.1f%%\n" +
-            "Total Guests: %d\n" +
-            "Total Revenue: %d DT",
+            "Room Capacity:\n" +
+            "  Total rooms: %d\n" +
+            "  Booked rooms: %d\n" +
+            "  Available rooms: %d\n" +
+            "  Occupancy rate: %.1f%%\n\n" +
+            "Guest Capacity:\n" +
+            "  Max potential guests: %d\n" +
+            "  Current guests: %d\n" +
+            "  Guest occupancy: %.1f%%\n\n" +
+            "Financial:\n" +
+            "  Total guests booked: %d\n" +
+            "  Total revenue: %d DT\n" +
+            "  Average revenue per room: %d DT",
             totalCapacity, totalBooked, totalAvailable, occupancyRate,
-            allGuestNames.size(), calculateTotalRevenue()
+            maxPotentialGuests, currentGuests, guestOccupancyRate,
+            allGuestNames.size(), calculateTotalRevenue(),
+            totalBooked > 0 ? calculateTotalRevenue() / totalBooked : 0
         );
     }
     
@@ -133,26 +190,63 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
         }
         allGuestNames.clear();
         
-        return "System has been reset and all bookings are cleared.";
+        return "System has been reset.\nAll bookings cleared.\nAll rooms are now available.";
     }
     
     public String addRooms(String type, int count, int price) throws RemoteException {
         String roomKey = type.toLowerCase();
         
         if (!rooms.containsKey(roomKey)) {
-
-        rooms.put(type, new RoomType(count, price, type));
-
-        return String.format("New room type created: %d new %s room(s) at %d DT a day", count, type, price);}
-
+            // For new room types, prompt for additional info
+            String displayName = type.substring(0, 1).toUpperCase() + type.substring(1) + " Room";
+            int maxGuests = 2; // Default
+            String description = "New room type";
+            
+            // Set different defaults based on room type name
+            if (type.toLowerCase().contains("single")) {
+                maxGuests = 1;
+                description = "Single occupancy room";
+            } else if (type.toLowerCase().contains("double")) {
+                maxGuests = 2;
+                description = "Double occupancy room";
+            } else if (type.toLowerCase().contains("triple") || type.toLowerCase().contains("family")) {
+                maxGuests = 3;
+                description = "Family or group room";
+            } else if (type.toLowerCase().contains("suite")) {
+                maxGuests = 4;
+                description = "Luxury suite";
+            }
+            
+            rooms.put(roomKey, new RoomType(count, price, displayName, maxGuests, description));
+            
+            return String.format(
+                "NEW ROOM TYPE CREATED\n" +
+                "Type: %s\n" +
+                "Count: %d rooms\n" +
+                "Price: %d DT per night\n" +
+                "Max guests: %d person(s)\n" +
+                "Description: %s",
+                displayName, count, price, maxGuests, description
+            );
+        }
         
+        // Existing room type - just update count and price
         RoomType room = rooms.get(roomKey);
         room.initialCount += count;
         room.currentCount += count;
         room.price = price;
         
-        return String.format("Added %d %s room(s) \nNew capacity: %d \nNew price: %d DT each",
-                           count, room.displayName, room.initialCount, price);
+        return String.format(
+            "ROOMS ADDED\n" +
+            "Room type: %s\n" +
+            "Added: %d room(s)\n" +
+            "New total: %d rooms\n" +
+            "New price: %d DT per night\n" +
+            "Max guests per room: %d\n" +
+            "Description: %s",
+            room.displayName, count, room.initialCount, price, 
+            room.maxGuests, room.description
+        );
     }
     
     private int calculateTotalRevenue() {

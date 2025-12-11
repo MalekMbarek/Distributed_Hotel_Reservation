@@ -1,5 +1,4 @@
 import java.rmi.Naming;
-import java.util.*;
 
 public class HotelAdmin {
     public static void main(String[] args) {

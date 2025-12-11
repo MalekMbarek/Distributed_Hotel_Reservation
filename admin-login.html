@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Grand Lux Hotel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2980 0%, #26d0ce 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            width: 100%;
+            max-width: 480px;
+        }
+        
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 50px 40px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo h1 {
+            color: #1a2980;
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .logo p {
+            color: #666;
+            font-size: 16px;
+            font-weight: 300;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 18px 20px;
+            padding-left: 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #1a2980;
+            background: white;
+            box-shadow: 0 5px 15px rgba(26, 41, 128, 0.1);
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 42px;
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(to right, #1a2980, #26d0ce);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(26, 41, 128, 0.3);
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(26, 41, 128, 0.4);
+        }
+        
+        .login-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .error-message {
+            background: linear-gradient(to right, #ff6b6b, #ff4757);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            text-align: center;
+            display: none;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-link a {
+            color: #1a2980;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
+        }
+        
+        .back-link a:hover {
+            color: #26d0ce;
+        }
+        
+        .security-notice {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 25px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+            border-left: 4px solid #1a2980;
+        }
+        
+        .security-notice i {
+            color: #1a2980;
+            margin-right: 8px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo">
+                <h1>
+                    <i class="fas fa-user-shield"></i>
+                    Admin Portal
+                </h1>
+                <p>Grand Lux Hotel Management System</p>
+            </div>
+            
+            <div id="error" class="error-message">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Invalid credentials. Please try again.</span>
+            </div>
+            
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="code"><i class="fas fa-key"></i> Admin Code</label>
+                    <div class="input-icon">
+                        <i class="fas fa-user-lock"></i>
+                    </div>
+                    <input type="text" id="code" placeholder="Enter your admin code" required>
+                </div>
+                
+                <div class="input-group">
+                    <label for="password"><i class="fas fa-lock"></i> Password</label>
+                    <div class="input-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login to Admin Panel
+                </button>
+            </form>
+            
+            <div class="security-notice">
+                <i class="fas fa-shield-alt"></i>
+                For security reasons, please log out after completing your session.
+            </div>
+            
+            <div class="back-link">
+                <a href="/">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Main Menu
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const code = document.getElementById('code').value;
+            const password = document.getElementById('password').value;
+            
+            // Default admin credentials
+            const validCode = "123";
+            const validPassword = "123";
+            
+            if (code === validCode && password === validPassword) {
+                // Store in localStorage
+                localStorage.setItem('adminAuth', 'true');
+                localStorage.setItem('authTime', new Date().getTime());
+                
+                // Add loading animation
+                const btn = document.querySelector('.login-btn');
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Authenticating...';
+                btn.disabled = true;
+                
+                // Redirect to admin panel
+                setTimeout(() => {
+                    window.location.href = '/admin.html';
+                }, 1000);
+            } else {
+                const errorDiv = document.getElementById('error');
+                errorDiv.style.display = 'block';
+                document.getElementById('password').value = '';
+                
+                // Shake animation for wrong credentials
+                errorDiv.style.animation = 'none';
+                setTimeout(() => {
+                    errorDiv.style.animation = 'shake 0.5s ease-in-out';
+                }, 10);
+            }
+        });
+        
+        // Auto-redirect if already authenticated
+        const authTime = localStorage.getItem('authTime');
+        const now = new Date().getTime();
+        const hoursPassed = (now - authTime) / (1000 * 60 * 60);
+        
+        if (localStorage.getItem('adminAuth') === 'true' && hoursPassed < 2) {
+            window.location.href = '/admin.html';
+        }
+        
+        // Focus on code input on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('code').focus();
+        });
+    </script>
+</body>
+</html>
