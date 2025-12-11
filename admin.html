@@ -485,7 +485,7 @@
                     </div>
                 </div>
                 <p style="color: #666; margin-bottom: 25px; line-height: 1.6;">
-                    <strong style="color: #f44336;">⚠️ WARNING:</strong> This action cannot be undone. All bookings, guests, and revenue data will be permanently deleted.
+                    <strong style="color: #f44336;">WARNING:</strong> This action cannot be undone. All bookings, guests, and revenue data will be permanently deleted.
                 </p>
                 <form action="/admin/reset" method="post">
                     <div class="form-group">
@@ -629,7 +629,7 @@
                 return false;
             }
             
-            if (!confirm('⚠️ FINAL WARNING: This will delete ALL data. Are you absolutely sure?')) {
+            if (!confirm('FINAL WARNING: This will delete ALL data. Are you absolutely sure?')) {
                 e.preventDefault();
                 return false;
             }

@@ -19,7 +19,6 @@
         }
         
         .booking-container {
-            max-width: 700px;
             margin: 0 auto;
             background: white;
             border-radius: 25px;
@@ -502,7 +501,7 @@
                 const line = lines[i].trim();
                 
                 // Look for room type lines like "Single Room:"
-                if (line.includes('Room:')) {
+                if (line.includes('Room:')||line.includes('Suite:')) {
                     if (currentRoom && currentRoom.type) {
                         roomData[currentRoom.type] = {
                             displayName: currentRoom.displayName,

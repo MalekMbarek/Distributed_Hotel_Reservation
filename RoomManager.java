@@ -11,8 +11,8 @@ public interface RoomManager extends Remote{
 		throws RemoteException;
 	public String resetSystem()
 		throws RemoteException;
-    public String addRooms(String type, int count, int price)
-        throws RemoteException;
+public String addRooms(String type, int count, int price, String displayName, 
+                      int maxGuests, String description) throws RemoteException;
 	public String revenue()
 		throws RemoteException;
 

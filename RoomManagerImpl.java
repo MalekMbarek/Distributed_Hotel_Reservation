@@ -28,11 +28,11 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
     
     static {
         // Initialize with enhanced room types
-        rooms.put("single", new RoomType(5, 55000, "Single Room", 1, 
+        rooms.put("single", new RoomType(5,120, "Single Room", 1, 
             "Perfect for solo travelers with essential amenities"));
-        rooms.put("double", new RoomType(6, 75000, "Double Room", 2, 
+        rooms.put("double", new RoomType(6, 250, "Double Room", 2, 
             "Ideal for couples with comfortable bedding"));
-        rooms.put("triple", new RoomType(2, 80000, "Triple Room", 3, 
+        rooms.put("triple", new RoomType(2, 330, "Triple Room", 3, 
             "Spacious room suitable for families or small groups"));
     }
     
@@ -193,61 +193,80 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
         return "System has been reset.\nAll bookings cleared.\nAll rooms are now available.";
     }
     
-    public String addRooms(String type, int count, int price) throws RemoteException {
-        String roomKey = type.toLowerCase();
-        
-        if (!rooms.containsKey(roomKey)) {
-            // For new room types, prompt for additional info
-            String displayName = type.substring(0, 1).toUpperCase() + type.substring(1) + " Room";
-            int maxGuests = 2; // Default
-            String description = "New room type";
-            
-            // Set different defaults based on room type name
-            if (type.toLowerCase().contains("single")) {
-                maxGuests = 1;
-                description = "Single occupancy room";
-            } else if (type.toLowerCase().contains("double")) {
-                maxGuests = 2;
-                description = "Double occupancy room";
-            } else if (type.toLowerCase().contains("triple") || type.toLowerCase().contains("family")) {
-                maxGuests = 3;
-                description = "Family or group room";
-            } else if (type.toLowerCase().contains("suite")) {
-                maxGuests = 4;
-                description = "Luxury suite";
-            }
-            
-            rooms.put(roomKey, new RoomType(count, price, displayName, maxGuests, description));
-            
-            return String.format(
-                "NEW ROOM TYPE CREATED\n" +
-                "Type: %s\n" +
-                "Count: %d rooms\n" +
-                "Price: %d DT per night\n" +
-                "Max guests: %d person(s)\n" +
-                "Description: %s",
-                displayName, count, price, maxGuests, description
-            );
+public String addRooms(String type, int count, int price, String displayName, 
+                      int maxGuests, String description) throws RemoteException {
+    String roomKey = type.toLowerCase();
+    
+    if (!rooms.containsKey(roomKey)) {
+        // For new room types, use provided info or defaults
+        if (displayName == null || displayName.trim().isEmpty()) {
+            displayName = type.substring(0, 1).toUpperCase() + type.substring(1) + " Room";
         }
         
-        // Existing room type - just update count and price
-        RoomType room = rooms.get(roomKey);
-        room.initialCount += count;
-        room.currentCount += count;
-        room.price = price;
+        if (maxGuests <= 0) {
+            // Set defaults based on room type name if maxGuests not provided
+            if (type.toLowerCase().contains("single")) {
+                maxGuests = 1;
+            } else if (type.toLowerCase().contains("double")) {
+                maxGuests = 2;
+            } else if (type.toLowerCase().contains("triple") || type.toLowerCase().contains("family")) {
+                maxGuests = 3;
+            } else if (type.toLowerCase().contains("suite")) {
+                maxGuests = 4;
+            } else {
+                maxGuests = 2; // Default
+            }
+        }
         
+        if (description == null || description.trim().isEmpty()) {
+            // Set default description based on type
+            String lowerType = type.toLowerCase();
+            if (lowerType.contains("single")) {
+                description = "Single occupancy room";
+            } else if (lowerType.contains("double")) {
+                description = "Double occupancy room";
+            } else if (lowerType.contains("triple") || lowerType.contains("family")) {
+                description = "Family or group room";
+            } else if (lowerType.contains("suite")) {
+                description = "Luxury suite";
+            } else {
+                description = "Standard room";
+            }
+        }
+        
+        rooms.put(roomKey, new RoomType(count, price, displayName, maxGuests, description));
+        System.out.println("roomadded");
         return String.format(
-            "ROOMS ADDED\n" +
-            "Room type: %s\n" +
-            "Added: %d room(s)\n" +
-            "New total: %d rooms\n" +
-            "New price: %d DT per night\n" +
-            "Max guests per room: %d\n" +
+            "NEW ROOM TYPE CREATED\n" +
+            "Type: %s\n" +
+            "Display Name: %s\n" +
+            "Count: %d rooms\n" +
+            "Price: %d DT per night\n" +
+            "Max guests: %d person(s)\n" +
             "Description: %s",
-            room.displayName, count, room.initialCount, price, 
-            room.maxGuests, room.description
+            type, displayName, count, price, maxGuests, description
         );
     }
+    
+    // Existing room type - just update count and price
+    RoomType room = rooms.get(roomKey);
+    room.initialCount += count;
+    room.currentCount += count;
+    room.price = price;
+    
+    return String.format(
+        "ROOMS ADDED\n" +
+        "Room type: %s\n" +
+        "Display Name: %s\n" +
+        "Added: %d room(s)\n" +
+        "New total: %d rooms\n" +
+        "New price: %d DT per night\n" +
+        "Max guests per room: %d\n" +
+        "Description: %s",
+        type, room.displayName, count, room.initialCount, price, 
+        room.maxGuests, room.description
+    );
+}
     
     private int calculateTotalRevenue() {
         int total = 0;

@@ -181,14 +181,7 @@ public class WebServer {
         int price = Integer.parseInt(priceStr);
         int maxGuests = maxGuestsStr.isEmpty() ? 2 : Integer.parseInt(maxGuestsStr);
         
-        // Create a formatted string with all room details
-        String roomDetails = String.format(
-            "type=%s|displayName=%s|count=%d|maxGuests=%d|price=%d|description=%s",
-            type, displayName, count, maxGuests, price, description
-        );
-        
-        // Call the existing method (will need to modify addRooms to parse this)
-        String result = hotelService.addRooms(roomDetails, count, price);
+String result = hotelService.addRooms(type, count, price, displayName, maxGuests, description);
         
         sendHtmlPage(out, "Add Rooms Result", result, "/admin.html");
     } catch (NumberFormatException e) {
