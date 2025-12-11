@@ -1,81 +1,172 @@
-# Hotel Reservation System (RMI Project)
+# Distributed Hotel Reservation System
 
-Project Files
+A distributed hotel reservation platform built using **Java RMI** combined with a **custom Web Server** that serves a full web interface for guests and administrators. The system supports room browsing, booking, availability checks, and administrative management.
 
-1. HotelServer.java
-Purpose: The main server that starts the RMI registry and makes the hotel service available to clients.
-What it does:
+---
 
-Starts the RMI registry on port 1099
-Creates an instance of RoomManagerImpl (the actual hotel logic)
-Binds it to the name "Hotel" in the RMI registry
-Keeps the server running so clients can connect
+## . Overview
 
-2. RoomManager.java (Interface)
-Purpose: Defines the "contract" - all the methods that clients can call remotely.
-What it contains:
+This project implements a complete distributed application for hotel reservation using:
 
-Method signatures (no implementation)
-Both regular client methods AND admin methods
-Ensures both server and client agree on what methods exist
+* **Java RMI** for communication between server and clients
+* **A lightweight HTTP Web Server** (custom Java implementation) to expose a web-based UI
+* **HTML pages** for the user and admin interfaces
 
-Methods:
+The system allows users to:
 
-list() - Show available rooms
-book(roomType, guestName) - Book a room
-guests() - List all guests
-revenue() - Show revenue
-getStats() - Admin: show statistics
-resetSystem() - Admin: reset all bookings
-addRooms(type, count, price) - Admin: add more rooms
+* View room availability
+* Book rooms
+* View booking confirmation
 
-3. RoomManagerImpl.java
-Purpose: The actual implementation of all hotel logic (runs on the server).
-What it does:
+Admins can:
 
-Contains ALL business logic for the hotel
-Manages room inventory, prices, guest lists
-Handles bookings, revenue calculation
-Implements both client and admin features
-Uses RMI to receive calls from clients
+* View all rooms and their status
+* Check revenue
+* Manage availability and system state
 
-4. HotelClient.java
-Purpose: Regular user client for guests to interact with the hotel.
-What it does:
+---
 
-Connects to the RMI server
-Provides 2 simple commands for guests (list,book)
-Used by regular customers to book rooms
+## . Architecture
 
-5. HotelAdmin.java
-Purpose: Administrator client with special privileges.
-What it does:
+### **Main components**
 
-Connects to same RMI server as HotelClient
-Has access to admin-only methods
-Used by hotel staff/management
+* **RoomManager (Interface)**: Declares remote methods.
+* **RoomManagerImpl**: Contains full hotel logic (rooms, guests, booking, pricing, revenue, attributes).
+* **HotelServer**: Hosts the RMI service and registers RoomManager.
+* **WebServer**: Custom HTTP server that:
 
-How the System Works
+  * handles GET/POST requests
+  * interacts with RoomManager via RMI
+  * serves the HTML UI
+* **HTML Frontend**:
 
-Server starts first: HotelServer → runs RMI registry + hotel logic
-Client connects: HotelClient or HotelAdmin connects to server
-Method calls: Client calls methods defined in RoomManager interface
-Execution: Methods run on server (RoomManagerImpl)
-Results returned: Server sends results back to client
+  * `index.html` – main menu
+  * `book.html` – booking page
+  * `room-availability.html` – room status
+  * `admin-login.html` – login portal
+  * `admin.html` – admin dashboard
 
-Setup & Running
+---
 
-Compile:
+## . Updated Room Types
 
-javac *.java
+Room types have been expanded and now include several attributes instead of the initial basic listing.
 
-Run (3 terminals needed):
+Each room now has:
 
-**Terminal 1 - RMI Registry**
+* **Type** (Single, Double, Suite, Deluxe, etc.)
+* **Price**
+* **Capacity**
+* **Availability**
+* **Description**
+---
+
+## . How the System Works
+
+### 1 RMI Layer
+
+The RMI layer manages all hotel operations:
+
+* Listing rooms
+* Booking rooms
+* Tracking revenue
+* Tracking guests
+* Admin operations
+
+`HotelServer.java` starts the registry and binds the RoomManager service.
+
+### 2 Web Server Layer
+
+The web server:
+
+* Compiles and serves HTML pages
+* Handles `/book`, `/rooms`, `/admin` routes
+* Converts HTTP requests into RMI method calls
+
+Example:
+
+* User submits booking → POST to WebServer → WebServer calls `RoomManager.bookRoom()` via RMI.
+
+---
+
+## . Running the System
+
+### **Windows (Batch Script Provided)**
+
+A ready script is included to launch everything automatically.
+
+Or run manually:
+
+### Step 1: Start RMI Registry
+
+```
 rmiregistry
-**Terminal 2 - Server**
-java HotelServer
+```
 
-**Terminal 3 - Client (or open more terminals)**
-java HotelClient list
-java HotelAdmin stats
+Leave it running.
+
+### Step 2: Start HotelServer
+
+```
+javac *.java
+java HotelServer
+```
+
+### Step 3: Start Web Server
+
+```
+javac WebServer.java
+java WebServer
+```
+
+### Step 4: Open the Web Interface
+
+Open in browser:
+
+```
+http://localhost:8080
+```
+
+---
+
+## . Features
+
+### **Guest Features**
+
+* View all rooms and attributes
+* Check real-time availability
+* Submit bookings
+
+### **Admin Features**
+
+* Login authentication
+* View all reservations
+* View room state
+* Revenue tracking
+
+---
+
+## . Repository Structure
+
+```
+Distributed_Hotel_Reservation/
+│── HotelServer.java
+│── RoomManager.java
+│── RoomManagerImpl.java
+│── HotelClient.java
+│── HotelAdmin.java
+│── WebServer.java
+│── index.html
+│── admin.html
+│── admin-login.html
+│── book.html
+│── room-availability.html
+│── *.class
+└── README.md
+```
+
+
+## Authors
+
+**Malek Mbarek**
+**Amal Messaoudi**
