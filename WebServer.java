@@ -190,26 +190,10 @@ String result = hotelService.addRooms(type, count, price, displayName, maxGuests
 }
     
     static void handleAdminReset(BufferedReader in, PrintWriter out) throws Exception {
-        String body = readRequestBody(in);
-        String[] params = body.split("&");
-        
-        String confirm = "";
-        for (String param : params) {
-            String[] keyValue = param.split("=");
-            if (keyValue.length == 2) {
-                String key = URLDecoder.decode(keyValue[0], "UTF-8");
-                String value = URLDecoder.decode(keyValue[1], "UTF-8");
-                if (key.equals("confirm")) confirm = value;
-            }
-        }
-        
         String result;
-        if ("yes".equalsIgnoreCase(confirm)) {
             result = hotelService.resetSystem();
-        } else {
-            result = "Reset cancelled. Type 'yes' to confirm.";
-        }
-        
+
+    
         sendHtmlPage(out, "System Reset", result, "/admin.html");
     }
     
