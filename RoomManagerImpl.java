@@ -2,7 +2,6 @@ import java.rmi.*;
 import java.util.*;
 
 public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject implements RoomManager {
-    // Enhanced RoomType class with more details
     private static class RoomType {
         int initialCount;
         int currentCount;
@@ -11,7 +10,6 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
         String displayName;
         String description;
         List<String> bookedGuests;
-        
         RoomType(int count, int price, String displayName, int maxGuests, String description) {
             this.initialCount = count;
             this.currentCount = count;
