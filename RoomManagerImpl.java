@@ -27,7 +27,6 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
     private static Set<String> allGuestNames = new HashSet<>();
     
     static {
-        // Initialize with enhanced room types
         rooms.put("single", new RoomType(5,120, "Single Room", 1, 
             "Perfect for solo travelers with essential amenities"));
         rooms.put("double", new RoomType(6, 250, "Double Room", 2, 

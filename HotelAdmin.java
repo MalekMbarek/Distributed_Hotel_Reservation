@@ -13,12 +13,15 @@ public class HotelAdmin {
                 } else if (args[0].equalsIgnoreCase("reset") && args.length == 2 && args[1].equalsIgnoreCase("confirm")) {
                     System.out.println(h.resetSystem());
                     
-                } else if (args[0].equalsIgnoreCase("add") && args.length == 4) {
-                    // Add rooms: add <type> <count> <price>
+                } else if (args[0].equalsIgnoreCase("add") && args.length == 7) {
+                    // Add rooms: add count, price, displayName, maxGuests, description
                     String type = args[1];
                     int count = Integer.parseInt(args[2]);
                     int price = Integer.parseInt(args[3]);
-                    System.out.println(h.addRooms(type, count, price));
+                    String displayName = args[4];
+                    int maxGuests = Integer.parseInt(args[5]);
+                    String description = args[6];
+                    System.out.println(h.addRooms(type,count, price, displayName, maxGuests, description));
                     
                 }
                 else if(args[0].equalsIgnoreCase("list")){
@@ -35,8 +38,8 @@ public class HotelAdmin {
         System.out.println("Use one of these Hotel Admin Available commands:");
         System.out.println("");
         System.out.println("java HotelAdmin stats");
-        System.out.println("java HotelAdmin reset confirm");
-        System.out.println("java HotelAdmin add <room-type> <count> <price>");
+        System.out.println("java HotelAdmin reset <confirm>");
+        System.out.println("java HotelAdmin add <room-type><count><price><display-name><max-occupency><discription>");
         System.out.println("java HotelAdmin guests");
         System.out.println("java HotelAdmin revenue");
         System.out.println("java HotelAdmin list");
@@ -50,8 +53,8 @@ public class HotelAdmin {
         System.out.println("Use one of these Hotel Admin Available commands:");
         System.out.println("");
         System.out.println("java HotelAdmin stats");
-        System.out.println("java HotelAdmin reset confirm");
-        System.out.println("java HotelAdmin add <room-type> <count> <price>");
+        System.out.println("java HotelAdmin reset <confirm>");
+        System.out.println("java HotelAdmin add <room-type><count><price><display-name><max-occupency><discription>");
         System.out.println("java HotelAdmin guests");
         System.out.println("java HotelAdmin revenue");
         System.out.println("java HotelAdmin list");
