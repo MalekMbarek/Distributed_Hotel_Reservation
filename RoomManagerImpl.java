@@ -123,17 +123,17 @@ public class RoomManagerImpl extends java.rmi.server.UnicastRemoteObject impleme
             totalBookedRooms += bookedCount;
             
             sb.append(String.format("%s:\n", room.displayName));
-            sb.append(String.format("  • Booked rooms: %d\n", bookedCount));
-            sb.append(String.format("  • Price per room: %d DT\n", room.price));
-            sb.append(String.format("  • Room revenue: %d DT\n", roomRevenue));
-            sb.append(String.format("  • Max guests per room: %d\n", room.maxGuests));
-            sb.append(String.format("  • Potential guests: %d\n\n", bookedCount * room.maxGuests));
+            sb.append(String.format("  Booked rooms: %d\n", bookedCount));
+            sb.append(String.format("  Price per room: %d DT\n", room.price));
+            sb.append(String.format("  Room revenue: %d DT\n", roomRevenue));
+            sb.append(String.format("  Max guests per room: %d\n", room.maxGuests));
+            sb.append(String.format("  Potential guests: %d\n\n", bookedCount * room.maxGuests));
         }
         
         sb.append(String.format("SUMMARY:\n"));
-        sb.append(String.format("  • Total booked rooms: %d\n", totalBookedRooms));
-        sb.append(String.format("  • Total revenue: %d DT\n", totalRevenue));
-        sb.append(String.format("  • Average price per room: %d DT\n", 
+        sb.append(String.format("  Total booked rooms: %d\n", totalBookedRooms));
+        sb.append(String.format("  Total revenue: %d DT\n", totalRevenue));
+        sb.append(String.format("  Average price per room: %d DT\n", 
             totalBookedRooms > 0 ? totalRevenue / totalBookedRooms : 0));
         
         return sb.toString();
